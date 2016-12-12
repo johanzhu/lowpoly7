@@ -148,6 +148,7 @@
 			},5500)
 			/*定义帧动画处理器*/
 		   	mixer = new THREE.AnimationMixer(scene);
+		   	mixer.clipAction(sceneAnimationClip).loop = false;
 		   	mixer.clipAction(sceneAnimationClip).play();
 		   	animate();
 		   });
@@ -164,8 +165,6 @@
 	        if(mixer){
 	        	mixer.update(delta);
 	        	/*时间大于3700，读秒停止，停止动画循环*/
-	        	if(clock.oldTime > 3750){
-	        		clock.stop();
 	        	}
 	        }
 	        TWEEN.update();
