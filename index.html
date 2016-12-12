@@ -90,6 +90,18 @@
             }
 		    
 	       /*导入blender场景*/
+	      var mtlLoader = new THREE.MTLLoader();
+            mtlLoader.setPath( 'img/' );
+            mtlLoader.load( 'pikachu.mtl', function( materials ) {
+            materials.preload();
+            var objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials( materials );
+            objLoader.setPath( 'img/' );
+            objLoader.load( 'pikachu.obj', function ( object ) {
+		      object.castShadow = true;
+		      object.rotation.y = Math.PI;
+		      object.position.y = -1;
+		   /*导入盒子*/
 		   var loader = new THREE.ObjectLoader();
 		   loader.load('./img/box.json',function( loadedScene ){
 		   	sceneAnimationClip = loadedScene.animations[0];
@@ -106,20 +118,7 @@
 		   		}(i));
 		   	}
 		   	scene.add(camera);
-		   	/*blender场景中加入皮卡丘*/
-		   	var mtlLoader = new THREE.MTLLoader();
-            mtlLoader.setPath( 'img/' );
-            mtlLoader.load( 'pikachu.mtl', function( materials ) {
-            materials.preload();
-            var objLoader = new THREE.OBJLoader();
-            objLoader.setMaterials( materials );
-            objLoader.setPath( 'img/' );
-            objLoader.load( 'pikachu.obj', function ( object ) {
-		      object.castShadow = true;
-		      object.rotation.y = Math.PI;
-		      object.position.y = -1;
-		      scene.add(object);
-		    });});
+		   	scene.add(object);//加载后，导入blender场景，然后把皮卡丘导入进来
 		    /*blender场景中加入光线*/
 		   	var ambient = new THREE.AmbientLight( 0x444444 );
 		   	ambient.intensity = 0;
@@ -152,6 +151,7 @@
 		   	mixer.clipAction(sceneAnimationClip).play();
 		   	animate();
 		   });
+		    });});
 			
 	        
 		function animate(){
@@ -164,6 +164,10 @@
 	        /*动画处理器存在时，更新帧动画*/
 	        if(mixer){
 	        	mixer.update(delta);
+	        	/*时间大于3700，读秒停止，停止动画循环*/
+	        	if(clock.oldTime > 3750){
+	        		//clock.stop();
+	        	}
 	        }
 	        TWEEN.update();
 	        renderer.render(scene,camera);
